@@ -1,0 +1,253 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model tArmazem {
+  Armazem   String @id(map: "PK_tArmazem") @db.VarChar(2)
+  Descricao String @db.VarChar(50)
+  Tipo      Int
+}
+
+model tChaves {
+  UniqueID                  Int       @id(map: "PK_tChaves") @default(autoincrement())
+  ID                        String    @db.VarChar(5)
+  NIF                       String    @db.VarChar(20)
+  Estabelecimento           Int
+  NumPosto                  Int
+  Obsoleto                  Boolean
+  DataActualizacao          DateTime  @db.DateTime
+  Revendedor                String    @db.VarChar(12)
+  Vendedor                  String    @db.VarChar(10)
+  DataCriacao               DateTime  @db.DateTime
+  DataActivacao             DateTime  @db.DateTime
+  DataValidade              DateTime  @db.DateTime
+  ConfiguracaoPrograma      String    @db.VarChar(1)
+  TipoPrograma              String    @db.VarChar(1)
+  DescricaoPrograma         String    @db.VarChar(1)
+  Armazem                   String    @db.VarChar(2)
+  NumArmazem                Int
+  Versao                    String    @db.VarChar(12)
+  VersaoAnterior            String?   @db.VarChar(12)
+  NumUpgrades               Int?
+  TipoLicenca               Int
+  Filial                    Boolean
+  Activo                    Boolean
+  Estado                    Int
+  NumSerie                  String    @db.VarChar(80)
+  ChaveActivacao            String    @db.VarChar(50)
+  Disponivel                Boolean
+  Utilizador                String    @db.VarChar(20)
+  DataModificacao           DateTime  @db.DateTime
+  Observacoes               String?   @db.VarChar(500)
+  OrdemCriacao              Int?
+  CodigoConfirmacao         String?   @db.VarChar(8)
+  ContraCodigo              String?   @db.VarChar(8)
+  VersaoPais                String?   @db.VarChar(2)
+  EstadoRenovacao           Int?
+  DataRenovacao             DateTime? @db.DateTime
+  MultibancoEntidade        String?   @db.VarChar(5)
+  MultibancoReferencia      String?   @db.VarChar(9)
+  CodigoSMS                 String?   @db.VarChar(20)
+  CodigoFactura             String?   @db.VarChar(20)
+  TipoRenovacao             String?   @db.VarChar(1)
+  VersaoGesTOTAL            String?   @db.VarChar(20)
+  TipoAlteracao             String?   @db.VarChar(20)
+  Pedido                    String?   @db.VarChar(50)
+  DeviceID                  String?   @db.VarChar(50)
+  OnlineActivationNeedsCode Boolean   @default(false, map: "DF_tChaves_OnlineActivation")
+  OnlineActivationCode      String?   @db.VarChar(255)
+
+  @@index([NIF], map: "NIF")
+  @@index([NIF, Obsoleto, NumPosto], map: "NIF-OBSOLETO-NUMPOSTO")
+  @@index([NumPosto], map: "NumPosto")
+  @@index([Obsoleto], map: "Obsoleto")
+}
+
+model tChavesModulos {
+  ID              Int       @unique(map: "PK_tChavesModulos", clustered: true) @default(autoincrement())
+  Chave           String?   @db.VarChar(5)
+  NIF             String?   @db.VarChar(20)
+  Estabelecimento Int?
+  NumPosto        Int?
+  Modulo          String?   @db.VarChar(3)
+  Estado          Boolean?
+  Utilizador      String?   @db.VarChar(20)
+  DataModificacao DateTime? @db.DateTime
+  NumSerie        String?   @db.VarChar(80)
+  ChaveActivacao  String?   @db.VarChar(70)
+  Obsoleto        Boolean?
+}
+
+model tCodPostal {
+  ID        String @unique(map: "PK_tCodPostal", clustered: true) @db.UniqueIdentifier
+  CP        String @db.NChar(10)
+  CPExtenso String @db.VarChar(100)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tConfiguracaoPrograma {
+  Configuracao String   @db.NChar(1)
+  Descricao    String? @db.VarChar(50)
+
+  @@unique([Configuracao, Descricao], map: "ClusteredIndex-20230105-172652", clustered: true)
+  @@ignore
+}
+
+model tDescricaoPrograma {
+  DescricaoPrograma String @id(map: "PK_tDescricaoPrograma") @db.VarChar(1)
+  Descricao         String @db.VarChar(100)
+  Tipo              Int
+  TipoArmazem       Int
+}
+
+model tEmpresa {
+  NIF             String    @db.VarChar(20)
+  Pais            String    @db.VarChar(2)
+  Nome            String    @db.VarChar(255)
+  Morada1         String?   @db.VarChar(255)
+  Morada2         String?   @db.VarChar(255)
+  CP              String?   @db.NChar(10)
+  CPExtenso       String?   @db.VarChar(50)
+  Contacto        String?   @db.VarChar(50)
+  Telefone        String?   @db.VarChar(20)
+  Telemovel       String?   @db.VarChar(20)
+  EMail           String?   @db.VarChar(255)
+  Utilizador      String?   @db.NChar(20)
+  DataModificacao DateTime? @db.DateTime
+  RegTerritorial  String?   @db.NChar(2)
+  Morada3         String?   @db.VarChar(100)
+
+  @@id([NIF, Pais], map: "PK_tEmpresa")
+  @@index([NIF], map: "NIF")
+  @@index([Nome], map: "Nome")
+}
+
+model tEstabelecimento {
+  ID              Int
+  Empresa         String    @db.NChar(20)
+  Nome            String    @db.VarChar(100)
+  NomeFantasia    String?   @db.VarChar(100)
+  Morada1         String?   @db.VarChar(100)
+  Morada2         String?   @db.VarChar(100)
+  CP              String?   @db.NChar(10)
+  CPExtenso       String    @db.VarChar(50)
+  Telef           String?   @db.VarChar(20)
+  Telem           String?   @db.VarChar(20)
+  EMail           String?   @db.VarChar(50)
+  Conciliador     Boolean
+  Utilizador      String?   @db.NChar(20)
+  DataModificacao DateTime? @db.DateTime
+  EspacoFiscal    String?   @db.NChar(1)
+
+  @@id([ID, Empresa], map: "PK_tEstabelecimento_1")
+  @@index([Empresa], map: "Empresa")
+}
+
+model tEstado {
+  Estado    Int     @id(map: "PK_tEstado")
+  Descricao String? @db.VarChar(50)
+}
+
+model tModulo {
+  id              Int     @id(map: "PK_tModulo") @default(autoincrement())
+  CodModulo       String? @db.VarChar(3)
+  DescricaoModulo String? @db.VarChar(100)
+  Active          Boolean @default(true, map: "DF_tModulo_Active")
+}
+
+model tPais {
+  Pais            String    @id(map: "PK_tCPPais") @db.NChar(2)
+  Descricao       String?   @db.VarChar(50)
+  Utilizador      String?   @db.NChar(20)
+  DataModificacao DateTime? @db.DateTime
+}
+
+model tRevendedor {
+  NIF                    String    @db.VarChar(12)
+  Pais                   String    @default("N'PT'", map: "DF_tRevendedor_Pais") @db.VarChar(10)
+  Nome                   String    @db.VarChar(100)
+  Morada1                String?   @db.VarChar(100)
+  Morada2                String?   @db.VarChar(100)
+  CP                     String?   @db.NChar(10)
+  CPExtenso              String?   @db.VarChar(100)
+  Telefone               String?   @db.VarChar(20)
+  Telemovel              String?   @db.VarChar(20)
+  Email                  String?   @db.VarChar(50)
+  NumLicencasDisponiveis Int
+  Activo                 Boolean
+  Utilizador             String?   @db.NChar(20)
+  DataModificacao        DateTime? @db.DateTime
+  Morada3                String?   @db.VarChar(100)
+  CriaLicenca            Boolean
+  CriaEmpresa            Boolean
+  AlteraEmpresa          Boolean
+  CriaEstabelecimento    Boolean
+  AlteraEstabelecimento  Boolean
+  AlteraLicenca          Int
+  RenovaLicenca          Boolean
+  PedidoPorObrigatorio   Boolean   @default(false, map: "DF__tRevended__Pedid__4F7CD00D")
+
+  @@id([NIF, Pais], map: "PK_tRevendedor")
+}
+
+model tTipoPrograma {
+  TipoPrograma String @id(map: "PK_tTipoPrograma") @db.NChar(1)
+  Descricao    String @db.VarChar(100)
+  Tipo         Int
+}
+
+model tVendedor {
+  ID              Int
+  Revendedor      String    @db.NChar(9)
+  Nome            String    @db.VarChar(100)
+  Senha           String?   @db.NChar(10)
+  Telefone        String?   @db.VarChar(20)
+  Telemovel       String?   @db.VarChar(20)
+  EMail           String?   @db.VarChar(50)
+  Activo          Boolean?
+  TipoUser        Int
+  Utilizador      String?   @db.NChar(20)
+  DataModificacao DateTime? @db.DateTime
+  Menu            Boolean?
+
+  @@id([ID, Revendedor], map: "PK_tVendedor_1")
+}
+
+model RecuperarPassword{
+  Email String @unique @db.VarChar(320)
+  OTP String 
+
+  @@index([Email])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tVersao {
+  Versao      String  @db.NChar(12)
+  TipoLicenca String? @db.NChar(1)
+
+  @@unique([Versao, TipoLicenca], map: "ClusteredIndex-20230105-172724", clustered: true)
+  @@ignore
+}
+
+model tVersaoActual {
+  ID          Int       @id(map: "PK_tVersaoActual") @default(autoincrement())
+  Licenca     String?   @db.VarChar(10)
+  Versao      String?   @db.VarChar(14)
+  Localizacao String?   @db.VarChar(200)
+  Ficheiro    String?   @db.VarChar(200)
+  Data        DateTime? @db.DateTime
+  Host        String?   @db.VarChar(100)
+  Username    String?   @db.VarChar(20)
+  Password    String?   @db.VarChar(20)
+  Copiar      Boolean?
+}
+
+model tVersaoPais {
+  Codigo    String  @unique(map: "ClusteredIndex-20230105-173152", clustered: true) @db.VarChar(2)
+  Descricao String? @db.VarChar(100)
+}
