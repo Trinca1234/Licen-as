@@ -21,6 +21,7 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   RefreshCcw,
+  ScrollText,
   SearchIcon,
 } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
@@ -33,6 +34,7 @@ interface Licenca {
   DataValidade: string;
   UniqueID: string;
   TipoLicenca: string;
+  Estabelecimento: string;
   NumPosto: string;
   vendedorNome: string;
 }
@@ -43,8 +45,8 @@ const LicencaTable = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
-  const [sortBy, setSortBy] = useState<'NIF' | 'TipoLicenca' | 'ID'| 'DataValidade' | ''>('DataValidade');
-  const itemsPerPage: number = 9;
+  const [sortBy, setSortBy] = useState<'NIF' | 'NumPosto' | 'ID'| 'DataValidade' | 'Estabelecimento' | ''>('DataValidade');
+  const [itemsPerPage, setItemsPerPage] = useState<number>(9);
 
   const router = useRouter();
 
@@ -66,7 +68,7 @@ const LicencaTable = () => {
 
     fetchData();
   }, []);
-
+ 
   useEffect(() => {
     const fetchLicenca = async () => {
       if (!data ) return;
@@ -112,12 +114,22 @@ const LicencaTable = () => {
     }
   };
 
-  const handleSortByTipoLicenca = () => {
-    if (sortBy === 'TipoLicenca' && sortDirection === 'desc') {
-      setSortBy('TipoLicenca');
+  const handleSortByNumPosto = () => {
+    if (sortBy === 'NumPosto' && sortDirection === 'desc') {
+      setSortBy('NumPosto');
       setSortDirection('asc');
     } else {
-      setSortBy('TipoLicenca');
+      setSortBy('NumPosto');
+      setSortDirection('desc');
+    }
+  };
+
+  const handleSortByEstabelecimento = () => {
+    if (sortBy === 'Estabelecimento' && sortDirection === 'desc') {
+      setSortBy('Estabelecimento');
+      setSortDirection('asc');
+    } else {
+      setSortBy('Estabelecimento');
       setSortDirection('desc');
     }
   };
@@ -152,12 +164,12 @@ const LicencaTable = () => {
   
 
   const filteredLicenca = licenca
-  ? licenca.filter((item: Licenca) =>
-      Object.values(item).some((value: string | number) =>
-        String(value).toLowerCase().includes(searchQuery.toLowerCase())
+    ? licenca.filter((item: Licenca) =>
+        Object.values(item).some((value: string | number) =>
+          String(value).toLowerCase().includes(searchQuery.toLowerCase())
+        )
       )
-    )
-  : [];
+    : [];
 
   const sortedLicenca = [...filteredLicenca];
 
@@ -178,12 +190,12 @@ const LicencaTable = () => {
         return b.ID.localeCompare(a.ID);
       }
     });
-  } else if (sortBy === 'TipoLicenca') {
+  } else if (sortBy === 'NumPosto') {
     sortedLicenca.sort((a, b) => {
       if (sortDirection === 'asc') {
-        return a.TipoLicenca.toString().localeCompare(b.TipoLicenca);
+        return a.NumPosto.toString().localeCompare(b.NumPosto);
       } else {
-        return b.TipoLicenca.toString().localeCompare(a.TipoLicenca);
+        return b.NumPosto.toString().localeCompare(a.NumPosto);
       }
     });
   } else if (sortBy === 'DataValidade') {
@@ -192,6 +204,14 @@ const LicencaTable = () => {
         return a.DataValidade.localeCompare(b.DataValidade);
       } else {
         return b.DataValidade.localeCompare(a.DataValidade);
+      }
+    });
+  }else if (sortBy === 'Estabelecimento') {
+    sortedLicenca.sort((a, b) => {
+      if (sortDirection === 'asc') {
+        return a.Estabelecimento.toString().localeCompare(b.Estabelecimento);
+      } else {
+        return b.Estabelecimento.toString().localeCompare(a.Estabelecimento);
       }
     });
   }
@@ -206,7 +226,7 @@ const LicencaTable = () => {
       if (!data) {
         router.push("/login");
       }
-    }, 5000);
+    }, 2000);
   
     return () => clearTimeout(timeout);
   }, [data, router]);
@@ -223,7 +243,7 @@ const LicencaTable = () => {
           onChange={handleSearch}
         />
         <Button 
-          onClick={refreshSearch} 
+          onClick={refreshSearch}
           className="ml-2" 
           size="sm" 
           variant="outline"
@@ -231,7 +251,8 @@ const LicencaTable = () => {
           <RefreshCcw/>
         </Button>
       </div>
-      <div className="border rounded-lg">
+      
+      <div className="border rounded-lg mt-2">
         <Table>
           <TableHeader>
             <TableRow>
@@ -255,11 +276,23 @@ const LicencaTable = () => {
                   )}
                 </div>
               </TableHead>
-              <TableHead className=' select-none'>Vendedor</TableHead>
-              <TableHead className='cursor-pointer select-none' onClick={handleSortByTipoLicenca}>
+              <TableHead className=' select-none'>Nome</TableHead>
+              <TableHead className='cursor-pointer select-none' onClick={handleSortByNumPosto}>
                 <div className="flex items-center">
-                  <span>Tipo Licença</span>
-                  {sortBy === 'TipoLicenca' && (
+                  <span>Estabelecimento</span>
+                  {/* se funciona não arranjes */}
+                  {sortBy === 'NumPosto' && (
+                    <span className="ml-1">
+                      {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    </span>
+                  )}
+                </div>
+              </TableHead>
+              <TableHead className='cursor-pointer select-none' onClick={handleSortByEstabelecimento}>
+                <div className="flex items-center">
+                  <span>Num Posto</span>
+                  {/* se funciona não arranjes */}
+                  {sortBy === 'Estabelecimento' && (
                     <span className="ml-1">
                       {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
                     </span>
@@ -276,7 +309,7 @@ const LicencaTable = () => {
                   )}
                 </div>
               </TableHead>
-              <TableHead>Detalhes</TableHead>
+              <TableHead></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -296,11 +329,12 @@ const LicencaTable = () => {
                 <td className=' h-10 '>{licenca.ID}</td>
                 <td>{licenca.NIF}</td>
                 <td>{licenca.vendedorNome}</td>
-                <td>{licenca.TipoLicenca}</td>
+                <td>{licenca.NumPosto}</td>
+                <td>{licenca.Estabelecimento}</td>
                 <td style={{ color: textColor }}>{licenca.DataValidade.substring(0, 10)}</td>
                 <td>
                   <button onClick={() => onOpen("renovarLicenca", { id: licenca.UniqueID })} className='border my-1 border-zinc-900 rounded bg-black text-white p-1'>
-                    Detalhes
+                    <ScrollText/>
                   </button>
                 </td>
               </TableRow>
@@ -315,6 +349,16 @@ const LicencaTable = () => {
             {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredLicenca.length)}{' '}
             of {filteredLicenca.length}
           </span>
+        </div>
+        <div className="flex items-center mt-2">
+          <span className="mr-2">Registos por página:</span>
+          <input
+            className="border border-gray-300 rounded focus:outline-none focus:border-primary px-2 py-1"
+            type="number"
+            min="1"
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
+          />
         </div>
         <div className="flex items-center gap-2">
           <Button

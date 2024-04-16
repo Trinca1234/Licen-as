@@ -16,7 +16,7 @@ export async function POST(req: Request) {
             return new NextResponse("OTP Missing", { status: 400 });
         }
 
-       /*  const user = await db.tVendedor.findFirst({
+        const user = await db.tVendedor.findFirst({
             where: {
                 EMail: email,
             }
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
 
         if(!user){
             return new NextResponse("Invalid Credentials", { status: 401 });
-        } */
+        }
 
         const recuperar = await db.recuperarPassword.findFirst({
             where:{

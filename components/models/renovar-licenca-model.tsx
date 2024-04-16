@@ -128,20 +128,17 @@ export const RenovarLicencaModal = () => {
                         <TabsTrigger value="Outras">Outras Informações</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Licença" className="mt-0">
-                        <div className="p-4 grid gap-3">
-                            <div className="grid grid-cols-1 justify-items-end m-0">
-                                
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
+                        <div className="p-4 grid gap-4">
+                            <div className="grid gap-2 grid-cols-2">
                                 <div>
-                                    <label htmlFor="name" className=" font-bold">Num. Licença :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
+                                    <label className="font-bold">Num. Licença :</label>
+                                    <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
                                         {detalhes?.data.NumSerie}
                                     </p>
                                 </div>
                                 <div>
-                                    <label htmlFor="name" className=" font-bold">Num. Licença :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
+                                    <label className="font-bold">NIF :</label>
+                                    <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
                                         {detalhes?.data.NIF}
                                     </p>
                                 </div>

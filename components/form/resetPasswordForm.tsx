@@ -13,7 +13,7 @@ import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   password: z.string().min(1, {
-    message: "Password invalida inválido"
+    message: "Password invalida"
   }),
   passwordConfirmation: z.string().min(1, {
     message: "Password inválido"

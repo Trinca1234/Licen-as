@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className={font.className}>
         <div className="flex h-screen">
           <NavBar />
-          <main className="flex-1 flex flex-col justify-center items-center" style={{ backgroundColor: "#F9F7F7" }}>
+          <main className="flex-1 flex flex-col justify-center items-center border-l-2">
             <ModalProvider />
             {children}
           </main>

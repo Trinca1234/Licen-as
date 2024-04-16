@@ -42,7 +42,7 @@ const EmpresasTable = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'Pais' | ''>('NIF');
-  const itemsPerPage: number = 8;
+  const [itemsPerPage, setItemsPerPage] = useState<number>(9);
 
   const router = useRouter();
 
@@ -137,7 +137,7 @@ const EmpresasTable = () => {
       if (!data) {
         router.push("/login");
       }
-    }, 5000);
+    }, 2000);
   
     return () => clearTimeout(timeout);
   }, [data, router]);
@@ -158,21 +158,25 @@ const EmpresasTable = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead onClick={handleSortByNIF}>
-                NIF{' '}
-                {sortBy === 'NIF' && (
-                  <span className="ml-1">
-                    {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                  </span>
-                )}
+              <TableHead className='cursor-pointer select-none' onClick={handleSortByNIF}>
+                <div className="flex items-center">
+                  NIF{' '}
+                  {sortBy === 'NIF' && (
+                    <span className="ml-1">
+                      {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    </span>
+                  )}
+                </div>
               </TableHead>
-              <TableHead onClick={handleSortByPais}>
-                País{' '}
-                {sortBy === 'Pais' && (
-                  <span className="ml-1">
-                    {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                  </span>
-                )}
+              <TableHead className='cursor-pointer select-none' onClick={handleSortByPais}>
+                <div className="flex items-center">
+                  País{' '}
+                  {sortBy === 'Pais' && (
+                    <span className="ml-1">
+                      {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    </span>
+                  )}
+                </div>
               </TableHead>
               <TableHead>Nome</TableHead>
               <TableHead>Email</TableHead>
@@ -201,6 +205,16 @@ const EmpresasTable = () => {
             {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredEmpresas?.length || 0)}{' '}
             of {filteredEmpresas?.length}
           </span>
+        </div>
+        <div className="flex items-center mt-2">
+          <span className="mr-2">Registos por página:</span>
+          <input
+            className="border border-gray-300 rounded focus:outline-none focus:border-primary px-2 py-1"
+            type="number"
+            min="1"
+            value={itemsPerPage}
+            onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
+          />
         </div>
         <div className="flex items-center gap-2">
           <Button

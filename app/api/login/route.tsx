@@ -16,6 +16,16 @@ export async function GET(req: Request) {
             return new NextResponse("Password Missing", { status: 400 });
         }
 
+        const UserEmail = await db.tVendedor.findFirst({
+            where: {
+                EMail: email
+            }
+        });
+
+        if(!UserEmail){
+            return new NextResponse("Invalid email", { status: 201 });
+        }
+
         const user = await db.tVendedor.findFirst({
             where: {
                 EMail: email,
@@ -41,7 +51,7 @@ export async function GET(req: Request) {
 
             return response;
         }else{
-            return new NextResponse("Invalid credentials", { status: 401 });
+            return new NextResponse("Invalid password", { status: 201 });
         }
 
     } catch (error) {

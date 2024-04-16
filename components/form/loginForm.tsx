@@ -28,8 +28,6 @@ const FormSchema = z.object({
     }),
     password: z.string().min(1,{
         message: "Password obrigatório"
-    }).min(4,{ 
-        message: "Password tem que ser maior q 9 letras"
     })
 })
 
@@ -46,30 +44,37 @@ const LoginForm = () => {
     })
 
     const onSubmit = async (values: z.infer<typeof FormSchema>)=>{
-        try{
-            const url = queryString.stringifyUrl({
-                url: '/api/login',
-                query: {
-                    email: values.email,
-                    password: values.password
-                }
-            });
-    
-            const login = await axios.get(url);
-
-            if(login.data == null){
-                form.setError("email", {
-                    type: "manual",
-                    message: "Conta não existe"
-                });
-                return;
+        const url = queryString.stringifyUrl({
+            url: '/api/login',
+            query: {
+                email: values.email,
+                password: values.password
             }
+        });
 
-            form.reset();
-            router.push("/");
-        }catch(error){
-            console.log(error);
+        const login = await axios.get(url);
+
+        console.log(login.request.response);
+        
+        if(login.data == "Invalid email"){
+            form.setError("email", { 
+                type: "manual",
+                message: "Conta não existe"
+            });
+            return;
+        }else if(login.data == "Invalid password"){
+            form.setError("password", { 
+                type: "manual",
+                message: "Password incorreta"
+            });
+            return;
         }
+
+        form.reset();
+        router.push("/");
+        const timeout = setTimeout(() => {
+            window.location.reload();
+        }, 1000);
     } 
 
     async function HandleReset(values: z.infer<typeof FormSchema>) {
