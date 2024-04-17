@@ -121,122 +121,132 @@ export const RenovarLicencaModal = () => {
     
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
-            <DialogContent style={{ width: '790px' }} className=" pt-0">
+            <DialogContent style={{ width: '1050px' }} className=" pt-0">
                 <Tabs className="w-full" defaultValue="general">
-                    <TabsList className="flex gap-0">
+                    <TabsList className=" bg-white gap-0">
                         <TabsTrigger value="Licença">Licença</TabsTrigger>
                         <TabsTrigger value="Outras">Outras Informações</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Licença" className="mt-0">
                         <div className="p-4 grid gap-4">
-                            <div className="grid gap-2 grid-cols-2">
+                            <div className="grid gap-2 grid-cols-3">
                                 <div>
-                                    <label className="font-bold">Num. Licença :</label>
-                                    <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
-                                        {detalhes?.data.NumSerie}
-                                    </p>
+                                    <div className="grid gap-2 grid-cols-1">
+                                        <div>
+                                            <label className="font-bold">Num. Licença :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.NumSerie}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className="font-bold">NIF :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.NIF}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-2 grid-cols-2 mt-2">
+                                        <div>
+                                            <label className=" font-bold">Tipo Licença :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.TipoLicenca}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className=" font-bold">Versão Licença :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.Versao}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label className="font-bold">NIF :</label>
-                                    <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
-                                        {detalhes?.data.NIF}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
-                                <div>
-                                    <label htmlFor="anotherInput" className=" font-bold">Tipo Licença :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.TipoLicenca}
-                                    </p>
-                                </div>
-                                <div>
-                                    <label htmlFor="yetAnotherInput" className=" font-bold">Versão Licença :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.Versao}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-1">
-                                <div>
-                                    <label htmlFor="name" className=" font-bold">Revendedor :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.Revendedor}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
-                                <div>
-                                    <label htmlFor="anotherInput" className=" font-bold">Tipo Posto :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.ConfiguracaoPrograma}
-                                    </p>
-                                </div>
-                                <div>
-                                    <label htmlFor="yetAnotherInput" className=" text-white">*</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.TipoPrograma}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.DescricaoPrograma}
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.Armazem}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-1">
-                                <div>
-                                    <label htmlFor="name" className=" font-bold">Empresa :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.empresaNome}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
-                                <div>
-                                    <label htmlFor="anotherInput" className=" font-bold">Estabelecimento :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.Estabelecimento}
-                                    </p>
+                                    <div className="grid gap-1 grid-cols-1">
+                                        <div>
+                                            <label className=" font-bold">Revendedor :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.Revendedor}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-1 grid-cols-2 mt-2">
+                                        <div>
+                                            <label className=" font-bold">Estabelecimento :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.Estabelecimento}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className=" font-bold">Posto :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.NumPosto}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-1 grid-cols-2 mt-2">
+                                        <div>
+                                            <label className=" font-bold">Tipo Posto :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.ConfiguracaoPrograma}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className=" text-white">*</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.TipoPrograma}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.DescricaoPrograma}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.Armazem}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
-                                    <label htmlFor="yetAnotherInput" className=" font-bold">Posto :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.NumPosto}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
-                                <div>
-                                    <label htmlFor="anotherInput" className=" font-bold">Data Criação :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.DataCriacao.substring(0, 10)}
-                                    </p>
-                                </div>
-                                <div>
-                                    <label htmlFor="yetAnotherInput" className=" font-bold">Data Ativação :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.DataActivacao.substring(0, 10)}
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="grid gap-1 grid-cols-2">
-                                <div>
-                                    <label htmlFor="anotherInput" className=" font-bold">Data Modificação :</label>
-                                    <p className="text-zinc-900 text-bold pl-3 border border-zinc-400">
-                                        {detalhes?.data.DataModificacao.substring(0, 10)}
-                                    </p>
-                                </div>
-                                <div>
-                                    <label htmlFor="yetAnotherInput" className=" font-bold">Data Validade :</label>
-                                    <p className={`${getClassForDate(detalhes?.data.DataValidade)} text-bold pl-3 border border-zinc-400`}>
-                                        {detalhes?.data.DataValidade.substring(0, 10)}
-                                    </p>
+                                    
+                                    <div className="grid gap-1 grid-cols-1">
+                                        <div>
+                                            <label className=" font-bold">Empresa :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.empresaNome}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="grid gap-1 grid-cols-2 mt-2">
+                                        <div>
+                                            <label className=" font-bold">Data Criação :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.DataCriacao.substring(0, 10)}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className=" font-bold">Data Ativação :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.DataActivacao.substring(0, 10)}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="grid gap-1 grid-cols-2 mt-2">
+                                        <div>
+                                            <label className=" font-bold">Data Modificação :</label>
+                                            <p className="text-bold pl-3 border border-gray-300 rounded-md p-2">
+                                                {detalhes?.data.DataModificacao.substring(0, 10)}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <label className=" font-bold">Data Validade :</label>
+                                            <p className={`${getClassForDate(detalhes?.data.DataValidade)} text-bold pl-3 border border-gray-300 rounded-md p-2`}>
+                                                {detalhes?.data.DataValidade.substring(0, 10)}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="grid gap-1 grid-cols-2">
