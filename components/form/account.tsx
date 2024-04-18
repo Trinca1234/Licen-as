@@ -104,9 +104,9 @@ const Account = () => {
             <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-4">
-                        <h2 className="text-xl font-bold">Update Password</h2>
+                        <h2 className="text-xl font-bold">Mudar Password</h2>
                         <div className="space-y-2"> 
-                            <Label htmlFor="current-password">Current Password</Label>
+                            <Label htmlFor="current-password">Password</Label>
                             <FormField
                             control={form.control}
                             name="currentPassword"
@@ -121,7 +121,7 @@ const Account = () => {
                             />
                         </div>
                         <div className="space-y-2"> 
-                            <Label htmlFor="current-password">New Password</Label>
+                            <Label htmlFor="current-password">Nova Password</Label>
                             <FormField
                             control={form.control}
                             name="password"
@@ -136,7 +136,7 @@ const Account = () => {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="current-password">Confirm Password</Label>
+                            <Label htmlFor="current-password">Confirmar Nova Password</Label>
                             <FormField
                             control={form.control}
                             name="passwordConfirmation"
@@ -150,7 +150,7 @@ const Account = () => {
                             )}
                             />
                         </div>
-                        <Button className="w-full" type="submit">Update Password</Button>
+                        <Button className="w-full" type="submit">Mudar Password</Button>
                         <div className="mt-6 text-center text-sm">
                             <div 
                             className="underline cursor-pointer" 

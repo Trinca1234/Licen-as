@@ -1,7 +1,6 @@
 import LicencaTable from "@/components/tables/licencasTable";
 
-const Empresas = () => {
-
+const Licencas = () => {
     return (
         <div className="w-full h-full">
             <div className="container px-4 grid gap-4 text-center md:gap-8 md:px-6 md:grid-col-1">
@@ -16,4 +15,4 @@ const Empresas = () => {
     )
 }
   
-export default Empresas;
+export default Licencas;

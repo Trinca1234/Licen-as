@@ -29,9 +29,13 @@ export async function GET(req: Request) {
         const user = await db.tVendedor.findFirst({
             where: {
                 EMail: email,
-                Senha: password
+                Senha: password,
             }
         });
+
+        if(user?.Activo == false){
+            return new NextResponse("Conta Desativada", { status: 201 });
+        }
 
         if (user) {
             const userData = JSON.stringify({ user: user });

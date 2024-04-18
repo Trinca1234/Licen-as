@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/table';
 import { Button } from '../ui/button';
 import {
+  CarTaxiFront,
+  CheckIcon,
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -26,6 +28,9 @@ import {
 } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
 import { useRouter } from 'next/navigation';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '../ui/command';
+import { cn } from '@/lib/utils';
 
 interface Licenca {
   ID: string;
@@ -37,7 +42,31 @@ interface Licenca {
   Estabelecimento: string;
   NumPosto: string;
   vendedorNome: string;
+  empresaNome: string;
 }
+
+const registos = [
+  {
+    value: "10",
+    label: "10",
+  },
+  {
+    value: "20",
+    label: "20",
+  },
+  {
+    value: "30",
+    label: "30",
+  },
+  {
+    value: "40",
+    label: "40",
+  },
+  {
+    value: "50",
+    label: "50",
+  },
+]
 
 const LicencaTable = () => {
   const [data, setData] = useState<{ Revendedor: string } | null>(null);
@@ -46,7 +75,9 @@ const LicencaTable = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'NumPosto' | 'ID'| 'DataValidade' | 'Estabelecimento' | ''>('DataValidade');
-  const [itemsPerPage, setItemsPerPage] = useState<number>(9);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
+  const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState("10")
 
   const router = useRouter();
 
@@ -60,6 +91,9 @@ const LicencaTable = () => {
     const fetchData = async () => {
       try {
         const result = await GetCookie();
+        /* if(!result){
+          router.push("/login");
+        } */
         setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -221,16 +255,6 @@ const LicencaTable = () => {
   const indexOfFirstItem: number = indexOfLastItem - itemsPerPage;
   const currentItems: Licenca[] = sortedLicenca.slice(indexOfFirstItem, indexOfLastItem);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!data) {
-        router.push("/login");
-      }
-    }, 2000);
-  
-    return () => clearTimeout(timeout);
-  }, [data, router]);
- 
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
@@ -277,21 +301,9 @@ const LicencaTable = () => {
                 </div>
               </TableHead>
               <TableHead className=' select-none'>Nome</TableHead>
-              <TableHead className='cursor-pointer select-none' onClick={handleSortByNumPosto}>
-                <div className="flex items-center">
-                  <span>Estabelecimento</span>
-                  {/* se funciona não arranjes */}
-                  {sortBy === 'NumPosto' && (
-                    <span className="ml-1">
-                      {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
-                    </span>
-                  )}
-                </div>
-              </TableHead>
               <TableHead className='cursor-pointer select-none' onClick={handleSortByEstabelecimento}>
                 <div className="flex items-center">
-                  <span>Num Posto</span>
-                  {/* se funciona não arranjes */}
+                  <span>Estabelecimento</span>
                   {sortBy === 'Estabelecimento' && (
                     <span className="ml-1">
                       {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
@@ -299,6 +311,17 @@ const LicencaTable = () => {
                   )}
                 </div>
               </TableHead>
+              <TableHead className='cursor-pointer select-none' onClick={handleSortByNumPosto}>
+                <div className="flex items-center">
+                  <span>Num Posto</span>
+                  {sortBy === 'NumPosto' && (
+                    <span className="ml-1">
+                      {sortDirection === 'asc' ? <ChevronDownIcon /> : <ChevronUpIcon />}
+                    </span>
+                  )}
+                </div>
+              </TableHead>
+              <TableHead className=' select-none'>Vendedor</TableHead>
               <TableHead className='cursor-pointer select-none' onClick={handleSortByDataValidade}>
                 <div className="flex items-center">
                     <span>Validade</span>
@@ -328,12 +351,13 @@ const LicencaTable = () => {
               <TableRow key={licenca.UniqueID}>
                 <td className=' h-10 '>{licenca.ID}</td>
                 <td>{licenca.NIF}</td>
-                <td>{licenca.vendedorNome}</td>
-                <td>{licenca.NumPosto}</td>
+                <td>{licenca.empresaNome}</td>
                 <td>{licenca.Estabelecimento}</td>
+                <td>{licenca.NumPosto}</td>
+                <td>{licenca.vendedorNome}</td>
                 <td style={{ color: textColor }}>{licenca.DataValidade.substring(0, 10)}</td>
                 <td>
-                  <button onClick={() => onOpen("renovarLicenca", { id: licenca.UniqueID })} className='border my-1 border-zinc-900 rounded bg-black text-white p-1'>
+                  <button onClick={() => onOpen("renovarLicenca", { id: licenca.UniqueID })} className='border my-1 border-zinc-900 rounded bg-black text-white p-0.5'>
                     <ScrollText/>
                   </button>
                 </td>
@@ -404,6 +428,47 @@ const LicencaTable = () => {
             <ChevronsRightIcon className="h-4 w-4" />
             <span className="sr-only">Go to last page</span>
           </Button>
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className="w-[200px] justify-between"
+              >
+                {value
+                  ? registos.find((registos) => registos.value === value)?.label
+                  : "Select registos..."}
+                <CarTaxiFront className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[200px] p-0">
+              <Command>
+                <CommandInput placeholder="Search framework..." className="h-9" />
+                <CommandEmpty>No registos found.</CommandEmpty>
+                <CommandGroup>
+                  {registos.map((registos) => (
+                    <CommandItem
+                      key={registos.value}
+                      value={registos.value}
+                      onSelect={(currentValue: string) => {
+                        setValue(currentValue === value ? "" : currentValue)
+                        setOpen(false)
+                      }}
+                    >
+                      {registos.label}
+                      <CheckIcon
+                        className={cn(
+                          "ml-auto h-4 w-4",
+                          value === registos.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>
@@ -411,3 +476,4 @@ const LicencaTable = () => {
 };
 
 export default LicencaTable;
+

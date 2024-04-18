@@ -27,18 +27,33 @@ export async function GET(req: Request) {
                 DataValidade: "desc"
             } 
         });
-        
-        const licencasWithVendedor = await Promise.all(licencas.map(async (licenca) => {
+
+        if(!licencas){
+            return new NextResponse("No Licencas found", { status: 404 });
+        }
+
+        const licencasWithVendedorWithEmpresaName = await Promise.all(licencas.map(async (licenca) => {
             const vendedor = await db.tVendedor.findFirst({
                 where: {
                     Utilizador: licenca.Utilizador
                 }
             });
-            
-            return { ...licenca, vendedorNome: vendedor?.Nome || "" };
+        
+            let empresaNome = "";
+            if (Array.isArray(licencas) && licencas.length > 0) {
+                const empresa = await db.tEmpresa.findFirst({
+                    where:{
+                        NIF: licencas[0].NIF,
+                    }
+                });
+                empresaNome = empresa?.Nome || "";
+            }
+        
+            return { ...licenca, vendedorNome: vendedor?.Nome, empresaNome };
         }));
+        
            
-        return NextResponse.json(licencasWithVendedor);
+        return NextResponse.json(licencasWithVendedorWithEmpresaName);
     } catch (error) {
         console.log("[LICENCAS_ID]", error);
         return new NextResponse("Internal Error", { status: 500 });

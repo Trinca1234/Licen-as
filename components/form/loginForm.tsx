@@ -68,10 +68,16 @@ const LoginForm = () => {
                 message: "Password incorreta"
             });
             return;
+        }else if(login.data == "Conta Desativada"){
+            form.setError("email", { 
+                type: "manual",
+                message: "Conta Desativada"
+            });
+            return;
         }
 
         form.reset();
-        router.push("/");
+        router.push("/licencas");
         const timeout = setTimeout(() => {
             window.location.reload();
         }, 1000);

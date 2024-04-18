@@ -128,7 +128,7 @@ export const RenovarLicencaModal = () => {
                         <TabsTrigger value="Outras">Outras Informações</TabsTrigger>
                     </TabsList>
                     <TabsContent value="Licença" className="mt-0">
-                        <div className="p-4 grid gap-4">
+                        {/* <div className="p-4 grid gap-4">
                             <div className="grid gap-2 grid-cols-3">
                                 <div>
                                     <div className="grid gap-2 grid-cols-1">
@@ -272,6 +272,91 @@ export const RenovarLicencaModal = () => {
                                 <div className="flex justify-end ">
                                     <Download className=" cursor-pointer" onClick={onInstalar}/>
                                 </div>
+                            </div>
+                        </div> */}
+                        <div>
+                            <h3 className="text-2xl font-bold mb-4">Licença</h3>
+                        </div>
+                        <div className="grid gap-2 grid-cols-2">
+                            <div className="">
+                                <table className="">
+                                    <tbody>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Num. Licença :</td>
+                                            <td className="py-2">{detalhes?.data.NumSerie}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">NIF:</td>
+                                            <td className="py-2">{detalhes?.data.NIF}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Tipo Licença:</td>
+                                            <td className="py-2">{detalhes?.data.TipoLicenca}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Versão Licença:</td>
+                                            <td className="py-2">{detalhes?.data.Versao}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Revendedor:</td>
+                                            <td className="py-2">{detalhes?.data.Revendedor}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Empresa:</td>
+                                            <td className="py-2">{detalhes?.data.empresaNome}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="">
+                                <table className=" px-">
+                                    <tbody>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Posto :</td>
+                                            <td className="py-2">{detalhes?.data.NumPosto}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Config Progama :</td>
+                                            <td className="py-2">{detalhes?.data.ConfiguracaoPrograma}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Tipo Programa:</td>
+                                            <td className="py-2">{detalhes?.data.TipoPrograma} <span className=" text-white select-none">*******************************</span> </td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Versão Licença:</td>
+                                            <td className="py-2">{detalhes?.data.Versao}</td>
+                                        </tr>
+                                        <tr className=" border-t-2 border-zinc-300 hover:bg-zinc-100">
+                                            <td className="py-2 pr-4">Data Validade:</td>
+                                            <td className={`${getClassForDate(detalhes?.data.DataValidade)}py-2`}>{detalhes?.data.DataValidade.substring(0, 10)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="grid gap-1 grid-cols-2">
+                            <div>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button size="sm">Renovar</Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-96">   
+                                        <div>
+                                            <div>Confirmação</div>
+                                            <div>Tem acerteza que quer renovar a licença?</div>
+                                        </div>
+                                        <div>
+                                            <div className="flex justify-end gap-2">
+                                                <Button onClick={() => onConfirm(detalhes?.data.UniqueID, detalhes?.data.DataValidade)} size="sm">Confirmar</Button>
+                                                <PopoverClose className=" px-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">Cancelar</PopoverClose>
+                                            </div>
+                                        </div>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                            <div className="flex justify-end ">
+                                <Download className=" cursor-pointer" onClick={onInstalar}/>
                             </div>
                         </div>
                     </TabsContent>

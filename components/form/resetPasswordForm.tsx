@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import queryString from "query-string";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
@@ -25,7 +25,14 @@ const FormSchema = z.object({
 
 const PasswordRecoveryForm = () => {
   const router = useRouter();
-  const email = localStorage.getItem('email');
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    const emailFromLocalStorage = localStorage.getItem('email');
+    if (emailFromLocalStorage) {
+      setEmail(emailFromLocalStorage);
+    }
+  }, []);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
