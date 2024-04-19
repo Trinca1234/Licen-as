@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
-import { GetCookie } from '../../functions/cookie/route';
+import { GetCookie } from '@/lib/getCookie';
 import {
   Table,
   TableBody,
@@ -22,6 +22,7 @@ import {
   ChevronUpIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  ChevronsUpDownIcon,
   RefreshCcw,
   ScrollText,
   SearchIcon,
@@ -29,8 +30,11 @@ import {
 import { useModal } from '@/hooks/use-modal-store';
 import { useRouter } from 'next/navigation';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '../ui/command';
 import { cn } from '@/lib/utils';
+import { Label } from '../ui/label';
+import { Command } from '../ui/command';
+import { Select } from '@radix-ui/react-select';
+import { SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 
 interface Licenca {
   ID: string;
@@ -76,10 +80,27 @@ const LicencaTable = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'NumPosto' | 'ID'| 'DataValidade' | 'Estabelecimento' | ''>('DataValidade');
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("10")
 
-  const router = useRouter();
+  async function itemPerPage() {
+    try {
+      const fetchedData = await GetCookie();
+      if (!fetchedData) return;
+      
+      const url = queryString.stringifyUrl({
+        url: '/api/licencas/registos',
+        query: {
+          id: fetchedData.ID,
+          revendedor: fetchedData.Revendedor
+        },
+      });
+      const num = await axios.get(url);
+      setItemsPerPage(parseInt(num.data));
+    } catch (error) {
+      console.error('Error updating registos:', error);
+    }
+  }
+
+  itemPerPage();
 
   const { onOpen } = useModal();
 
@@ -91,9 +112,6 @@ const LicencaTable = () => {
     const fetchData = async () => {
       try {
         const result = await GetCookie();
-        /* if(!result){
-          router.push("/login");
-        } */
         setData(result);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -195,7 +213,26 @@ const LicencaTable = () => {
       console.error('Error fetching licença:', error);
     }
   };
-  
+
+  const handleItemsPerPageChange = async (value: string) => {
+    setItemsPerPage(parseInt(value));
+    try {
+      const fetchedData = await GetCookie();
+      if (!fetchedData) return;
+      
+      const url = queryString.stringifyUrl({
+        url: '/api/licencas/registos',
+        query: {
+          id: fetchedData.ID,
+          revendedor: fetchedData.Revendedor,
+          registos: value
+        },
+      });
+      await axios.patch(url);
+    } catch (error) {
+      console.error('Error updating registos:', error);
+    }
+  };
 
   const filteredLicenca = licenca
     ? licenca.filter((item: Licenca) =>
@@ -258,14 +295,31 @@ const LicencaTable = () => {
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
-        <SearchIcon className="ml-2 absolute h-4 w-4 text-gray-500 dark:text-gray-400" />
-        <input 
-          className="pl-8 w-full h-9 border border-gray-300 rounded-l focus:outline-none focus:border-primary"
-          placeholder="Search..." 
-          type="search" 
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+        <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Registos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Registos</SelectLabel>
+              {registos.map((item: { value: string, label: string }) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <div className="relative w-full">
+          <SearchIcon className="absolute h-4 w-4 top-2 left-3 text-gray-500 dark:text-gray-400" />
+          <input 
+            className="pl-8 w-full h-9 border border-gray-300 rounded-l focus:outline-none focus:border-primary"
+            placeholder="Search..." 
+            type="search" 
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
         <Button 
           onClick={refreshSearch}
           className="ml-2" 
@@ -374,16 +428,6 @@ const LicencaTable = () => {
             of {filteredLicenca.length}
           </span>
         </div>
-        <div className="flex items-center mt-2">
-          <span className="mr-2">Registos por página:</span>
-          <input
-            className="border border-gray-300 rounded focus:outline-none focus:border-primary px-2 py-1"
-            type="number"
-            min="1"
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
-          />
-        </div>
         <div className="flex items-center gap-2">
           <Button
             className="rounded-l-full"
@@ -428,47 +472,6 @@ const LicencaTable = () => {
             <ChevronsRightIcon className="h-4 w-4" />
             <span className="sr-only">Go to last page</span>
           </Button>
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-[200px] justify-between"
-              >
-                {value
-                  ? registos.find((registos) => registos.value === value)?.label
-                  : "Select registos..."}
-                <CarTaxiFront className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-[200px] p-0">
-              <Command>
-                <CommandInput placeholder="Search framework..." className="h-9" />
-                <CommandEmpty>No registos found.</CommandEmpty>
-                <CommandGroup>
-                  {registos.map((registos) => (
-                    <CommandItem
-                      key={registos.value}
-                      value={registos.value}
-                      onSelect={(currentValue: string) => {
-                        setValue(currentValue === value ? "" : currentValue)
-                        setOpen(false)
-                      }}
-                    >
-                      {registos.label}
-                      <CheckIcon
-                        className={cn(
-                          "ml-auto h-4 w-4",
-                          value === registos.value ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </Command>
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
     </div>

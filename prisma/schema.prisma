@@ -214,6 +214,7 @@ model tVendedor {
   Utilizador      String?   @db.NChar(20)
   DataModificacao DateTime? @db.DateTime
   Menu            Boolean?
+  registos        String?   @default("10")
 
   @@id([ID, Revendedor], map: "PK_tVendedor_1")
 }

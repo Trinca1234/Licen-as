@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Building, CircleUser, HomeIcon, Menu, ScrollText, SettingsIcon, Tally3 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Button } from './button';
-import { GetCookie } from '@/functions/cookie/route';
+import { GetCookie } from '@/lib/getCookie';
 
 const NavBar = () => {
     const [showLinks, setShowLinks] = useState(false);
@@ -14,6 +14,7 @@ const NavBar = () => {
         const isLogin = async () => {
             try {
                 const fetchedData = await GetCookie();
+                console.log(fetchedData);
                 if (!fetchedData) return;
                 setLogin(true);
     

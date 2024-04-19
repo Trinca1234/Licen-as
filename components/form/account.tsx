@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { DeleteUserDataCookie, GetCookie } from "@/functions/cookie/route";
+import { GetCookie } from '@/lib/getCookie';
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import queryString from "query-string";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { DeleteUserDataCookie } from "@/lib/deleteCookie";
 
 interface CookieData {
     EMail: string;

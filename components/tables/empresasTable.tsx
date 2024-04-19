@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import queryString from 'query-string';
-import { GetCookie } from '../../functions/cookie/route';
+import { GetCookie } from '@/lib/getCookie';
 import {
   Table,
   TableBody,

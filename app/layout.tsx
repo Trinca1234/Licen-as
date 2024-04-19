@@ -18,10 +18,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={font.className}>
-        <div className="flex h-screen">
+      <body className={`${font.className} overflow-hidden`}>
+        <div className="flex h-full">
           <NavBar />
-          <main className="flex-1 flex flex-col justify-center items-center border-l-2">
+          <main className=" flex-1 flex flex-col justify-center items-center border-l-2 overflow-auto">
             <ModalProvider />
             {children}
           </main>
