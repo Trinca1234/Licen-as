@@ -3,21 +3,24 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import queryString from 'query-string';
 import { getUserByEmail } from './lib/dbUtility';
+import { parse } from "cookie";
 
 export async function middleware(request: NextRequest) {
+  console.log("ativado");
+
   const response = NextResponse.next();
 
   const url = new URL(request.url);
 
-  if (url.pathname === '/login') {
+  if (url.pathname === '/login' || url.pathname === "/resetPassword") {
     return response;
   }
 
-  const login = request.cookies.get("userData");
+  /* const login = request.cookies.get("userData");
 
   if (!login) {
     return NextResponse.redirect(new URL('/login', request.url));
-  }
+  } */
 
   /* const decodedCookie = JSON.parse(decodeURIComponent(login.value));
 

@@ -105,7 +105,7 @@ export const RenovarLicencaModal = () => {
         if (expirationDate < today) {
             return "text-red-500";
         } else if (expirationDate < new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())) {
-            return "text-yellow-500";
+            return "text-orange-500";
         } else {
             return "text-zinc-900";
         }

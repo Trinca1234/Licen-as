@@ -5,6 +5,9 @@ import { DeleteUserDataCookie } from "./deleteCookie";
 
 export function GetCookie() {
     try {
+        if (typeof document === "undefined") {
+            return null;
+        }
         const cookies = parse(document.cookie || "");
 
         const userDataCookie = cookies.userData;

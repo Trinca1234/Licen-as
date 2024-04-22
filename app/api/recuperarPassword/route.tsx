@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import emailjs from "@emailjs/browser";
+import { serialize } from "cookie";
 
 export async function POST(req: Request) {
     try {
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
             return new NextResponse("OTP Missing", { status: 400 });
         }
 
-        const user = await db.tVendedor.findFirst({
+        /* const user = await db.tVendedor.findFirst({
             where: {
                 EMail: email,
             }
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
         if(!user){
             return new NextResponse("Invalid Credentials", { status: 401 });
-        }
+        } */
 
         const recuperar = await db.recuperarPassword.findFirst({
             where:{
@@ -33,6 +34,14 @@ export async function POST(req: Request) {
         })
 
         if(recuperar){
+            const userData = JSON.stringify({ email: email });
+            const userDataCookie = serialize("userEmail", userData, {
+                httpOnly: false,
+                maxAge: 60 * 60 * 24,
+                path: "/",
+                sameSite: "strict", 
+                secure: process.env.NODE_ENV === "production",
+            });
             await db.recuperarPassword.update({
                 where:{
                     Email: email

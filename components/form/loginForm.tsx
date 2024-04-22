@@ -89,10 +89,9 @@ const LoginForm = () => {
             return;
         }
 
+
         const OTP = Math.floor(Math.random() * 900000 + 100000);
         console.log(OTP);
-
-        localStorage.setItem('email', values.email);
 
         const url = queryString.stringifyUrl({
             url: '/api/recuperarPassword',
@@ -108,9 +107,11 @@ const LoginForm = () => {
             const serviceId = 'service_uyzmr3i';
             const templateId = 'template_2alndt9';
             const publicKey = 'Nz39Tq7vLRs-_yt5R';
+
+            console.log(OTP);
     
-            const templateParams = {
-                message: "http://localhost:3000/resetPassword?code="+OTP.toString(),
+            /* const templateParams = {
+                message: "http://localhost:3000/resetPassword/"+OTP.toString(),
                 to: values.email
             }
             
@@ -121,7 +122,7 @@ const LoginForm = () => {
             })
             .catch((error)=>{ 
                 console.error("Error sending email", error);
-            });
+            }); */
         }else{
           console.log(result);
         }
@@ -173,7 +174,7 @@ const LoginForm = () => {
                     >
                         Recuperar
                     </Link>
-                </p>
+                </p> 
                 <p className="text-center text-sm text-gray-600 mt-2">
                     Se não tiveres conta, porfavor . 
                     <Link className="text-blue-500 hover:underline" href="/register">Registrar</Link>

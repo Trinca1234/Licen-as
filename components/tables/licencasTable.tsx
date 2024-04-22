@@ -398,7 +398,7 @@ const LicencaTable = () => {
             if (dataValidade < today) {
               textColor = 'red';
             } else if (dataValidade <= nextMonth) {
-              textColor = 'yellow';
+              textColor = 'orange';
             }
 
             return (

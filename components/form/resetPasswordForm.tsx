@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import queryString from "query-string";
-import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
@@ -21,31 +20,23 @@ const FormSchema = z.object({
 }).refine(data => data.password === data.passwordConfirmation, {
     message: "As senhas não coincidem",
     path: ["passwordConfirmation"],
-});
+}); 
 
-const PasswordRecoveryForm = () => {
+interface repo{
+  email: string,
+  code: string
+}
+ 
+export default function PasswordRecoveryForm({email, code}:repo) {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-
-  useEffect(() => {
-    const emailFromLocalStorage = localStorage.getItem('email');
-    if (emailFromLocalStorage) {
-      setEmail(emailFromLocalStorage);
-    }
-  }, []);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       password: "",
       passwordConfirmation: "",
-    },
-  });
-
-  const url = window.location.href;
-  const queryParams = new URLSearchParams(url.split('?')[1]);
-  const code = queryParams.get('code');
-  console.log(code);
+    }
+  });  
 
   async function Confirm() {
     try {
@@ -58,6 +49,8 @@ const PasswordRecoveryForm = () => {
       });
       
       const result = await axios.get(url);
+
+      console.log("Confirmado");
 
     } catch (error) {
       console.error(error);
@@ -90,7 +83,6 @@ const PasswordRecoveryForm = () => {
       console.error(error);
     }
   };
-
   return (
     <div>
       <Form {...form}>
@@ -127,7 +119,5 @@ const PasswordRecoveryForm = () => {
         </form>
       </Form>
     </div>
-  );
-};
-
-export default PasswordRecoveryForm;
+  )
+}
