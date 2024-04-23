@@ -89,7 +89,6 @@ const LoginForm = () => {
             return;
         }
 
-
         const OTP = Math.floor(Math.random() * 900000 + 100000);
         console.log(OTP);
 
@@ -110,7 +109,7 @@ const LoginForm = () => {
 
             console.log(OTP);
     
-            /* const templateParams = {
+            const templateParams = {
                 message: "http://localhost:3000/resetPassword/"+OTP.toString(),
                 to: values.email
             }
@@ -122,7 +121,7 @@ const LoginForm = () => {
             })
             .catch((error)=>{ 
                 console.error("Error sending email", error);
-            }); */
+            });
         }else{
           console.log(result);
         }

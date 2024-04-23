@@ -34,7 +34,7 @@ interface Empresa {
   Morada1: string;
   Contacto: string;
 }
-
+ 
 const EmpresasTable = () => {
   const [data, setData] = useState<{ Utilizador: string } | null>(null);
   const [empresas, setEmpresas] = useState<Empresa[] | null>(null);

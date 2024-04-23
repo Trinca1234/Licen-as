@@ -7,7 +7,7 @@ const Empresas = () => {
                 <div className="space-y-2">
                     <h1 className="mt-5 text-3xl font-bold tracking-tighter sm:text-2xl md:text-4xl">Empresas</h1>
                 </div>
-                <div className="space-y-4 mb-5">
+                <div className="space-y-4 mb-5"> 
                     <EmpresasTable/>
                 </div>
             </div>

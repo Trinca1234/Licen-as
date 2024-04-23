@@ -14,10 +14,16 @@ async function getData() {
         
         const cookieStore = cookies()
         const cookieEmail = cookieStore.get('userEmail')
-        const email = cookieEmail ? JSON.parse(cookieEmail.value).user : '';
+        if(!cookieEmail?.value){
+            const repo = {
+                email: "erro",
+            };
+            return repo;
+        }
+        const parsedEmail = JSON.parse(cookieEmail?.value).email;
 
         const repo = {
-            email: email,
+            email: parsedEmail,
         };
         
         return repo
@@ -36,7 +42,7 @@ export default async function ResetPasswordPage({
     const repo = await getData()
 
     if(!repo.email){
-        repo.email = "231"
+        repo.email = ""
     }
     const code = params.code
     console.log(code);

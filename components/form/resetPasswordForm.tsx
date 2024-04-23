@@ -50,7 +50,7 @@ export default function PasswordRecoveryForm({email, code}:repo) {
       
       const result = await axios.get(url);
 
-      console.log("Confirmado");
+      console.log(result);
 
     } catch (error) {
       console.error(error);
