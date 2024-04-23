@@ -34,51 +34,21 @@ interface Empresa {
   Morada1: string;
   Contacto: string;
 }
- 
-const EmpresasTable = () => {
-  const [data, setData] = useState<{ Utilizador: string } | null>(null);
-  const [empresas, setEmpresas] = useState<Empresa[] | null>(null);
+
+interface repo{
+  empresas: Empresa[]
+}
+
+export default function EmpresasTable({empresas}:repo) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'Pais' | ''>('NIF');
   const [itemsPerPage, setItemsPerPage] = useState<number>(9);
 
+  console.log(empresas);
+
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await GetCookie();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const fetchEmpresas = async () => {
-      if (!data) return;
-
-      try {
-        const url = queryString.stringifyUrl({
-          url: '/api/empresas',
-          query: {
-            id: data.Utilizador,
-          },
-        });
-        const result = await axios.get<Empresa[]>(url);
-        setEmpresas(result.data);
-      } catch (error) {
-        console.error('Error fetching empresa:', error);
-      }
-    };
-
-    fetchEmpresas();
-  }, [data]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -105,7 +75,7 @@ const EmpresasTable = () => {
     }
   };
 
-  const filteredEmpresas = empresas
+   const filteredEmpresas = empresas
   ? empresas.filter((empresa) =>
       Object.values(empresa).some((value) =>
         value.toLowerCase().includes(searchQuery.toLowerCase())
@@ -125,22 +95,11 @@ const EmpresasTable = () => {
         return keyA > keyB ? -1 : 1;
       }
     });
-  }
+  } 
 
   const indexOfLastItem: number = currentPage * itemsPerPage;
   const indexOfFirstItem: number = indexOfLastItem - itemsPerPage;
-  const currentItems: Empresa[] | null = sortedEmpresas.slice(indexOfFirstItem, indexOfLastItem);
-
-  
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!data) {
-        router.push("/login");
-      }
-    }, 2000);
-  
-    return () => clearTimeout(timeout);
-  }, [data, router]);
+  const currentItems: typeof empresas | null = sortedEmpresas.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
     <div className="flex flex-col w-full gap-4">
@@ -265,5 +224,3 @@ const EmpresasTable = () => {
     </div>
   );
 };
-
-export default EmpresasTable;

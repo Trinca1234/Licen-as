@@ -72,74 +72,23 @@ const registos = [
   },
 ]
 
-const LicencaTable = () => {
-  const [data, setData] = useState<{ Revendedor: string } | null>(null);
-  const [licenca, setLicenca] = useState<Licenca[] | null>(null);
+interface repo{
+  licenca: Licenca[],
+  registo: string
+}
+
+export default function LicencaTable({licenca, registo}:repo) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'NumPosto' | 'ID'| 'DataValidade' | 'Estabelecimento' | ''>('DataValidade');
-  const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-
-  async function itemPerPage() {
-    try {
-      const fetchedData = await GetCookie();
-      if (!fetchedData) return;
-      
-      const url = queryString.stringifyUrl({
-        url: '/api/licencas/registos',
-        query: {
-          id: fetchedData.ID,
-          revendedor: fetchedData.Revendedor
-        },
-      });
-      const num = await axios.get(url);
-      setItemsPerPage(parseInt(num.data));
-    } catch (error) {
-      console.error('Error updating registos:', error);
-    }
-  }
-
-  itemPerPage();
+  const [itemsPerPage, setItemsPerPage] = useState<number>(parseInt(registo));
 
   const { onOpen } = useModal();
 
   const today = new Date();
   const nextMonth = new Date();
   nextMonth.setMonth(nextMonth.getMonth() + 1);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await GetCookie();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
- 
-  useEffect(() => {
-    const fetchLicenca = async () => {
-      if (!data ) return;
-      try {
-        const url = queryString.stringifyUrl({
-          url: '/api/licencas',
-          query: {
-            id: data.Revendedor,
-          },
-        });
-        const result = await axios.get<Licenca[]>(url);
-        setLicenca(result.data);
-      } catch (error) {
-        console.error('Error fetching licença:', error);
-      }
-    };
-
-    fetchLicenca();
-  }, [data]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -196,7 +145,7 @@ const LicencaTable = () => {
     }
   };
 
-  const refreshSearch = async () => {
+/*   const refreshSearch = async () => {
     try {
       const fetchedData = await GetCookie();
       if (!fetchedData) return;
@@ -212,7 +161,7 @@ const LicencaTable = () => {
     } catch (error) {
       console.error('Error fetching licença:', error);
     }
-  };
+  }; */
 
   const handleItemsPerPageChange = async (value: string) => {
     setItemsPerPage(parseInt(value));
@@ -320,14 +269,14 @@ const LicencaTable = () => {
             onChange={handleSearch}
           />
         </div>
-        <Button 
+{/*         <Button 
           onClick={refreshSearch}
           className="ml-2" 
           size="sm" 
           variant="outline"
         >
           <RefreshCcw/>
-        </Button>
+        </Button> */}
       </div>
       
       <div className="border rounded-lg mt-2">
@@ -477,6 +426,3 @@ const LicencaTable = () => {
     </div>
   );
 };
-
-export default LicencaTable;
-
