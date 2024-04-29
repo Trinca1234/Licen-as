@@ -1,7 +1,7 @@
 "use client";
 
 import qs from "query-string";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { Button } from "@/components/ui/button";
 
 import { PopoverTrigger, PopoverContent, Popover} from "@/components/ui/popover"
@@ -25,6 +25,8 @@ import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import { PopoverAnchor, PopoverClose } from "@radix-ui/react-popover";
 import { useRouter } from "next/navigation";
+import { stringify } from "querystring";
+import { Toaster, toast } from "sonner";
 
 export const RenovarLicencaModal = () => {
     const { isOpen, onClose, type, data } = useModal();
@@ -70,25 +72,42 @@ export const RenovarLicencaModal = () => {
         onClose();
     } 
 
-    async function onConfirm(UniqueId: number, Validade: string) {
+    async function onConfirm(licenca: AxiosResponse) {
         try {
+            if (!licenca) {
+                console.error("License data is undefined or null");
+                return null;
+            }
+    
             const url = qs.stringifyUrl({
-                url: '/api/licencas/renovar',
-                query: {
-                    id: UniqueId,
-                    validade: Validade
+                url: `http://licence.gestotal.pt/api/licence/${licenca.data.NumSerie}/renewOnline`,
+            });
+            const result = await axios.post(url, null, {
+                headers: {
+                    'Authorization': `Bearer 26463b467b6100617755fdc33c43ff82f60c2578e843621a4fdb868434ab6ff1`
                 }
             });
-            const result = await axios.patch(url);
+            const url2 = qs.stringifyUrl({
+                url: '/api/licencas/renovar',
+                query: {
+                    id: licenca.data.UniqueId,
+                    validade: licenca.data.dataValidade
+                }
+            });
+            const result2 = await axios.patch(url);
             if(result.status == 200){
                 setDetalhes(result);
             }
             router.refresh()
             return result;
         } catch (error) {
+            toast.error("Erro na renovação",{
+                duration: 3000,
+            });
             console.error(error);
         }
     }
+    
 
     function getClassForDate(dateString: string | undefined) {
         if (!dateString) {
@@ -150,6 +169,7 @@ export const RenovarLicencaModal = () => {
     
     return (
         <Dialog open={isModalOpen} onOpenChange={handleClose}>
+                <Toaster />
             <DialogContent style={{ width: '1050px' }} className=" pt-0">
                 <Popover>
                     <Tabs className="w-full" defaultValue="general">
@@ -285,7 +305,7 @@ export const RenovarLicencaModal = () => {
                             <div>Tem a certeza que quer renovar a licença para {getRenewalDate()}?</div>
                         </div>
                         <div className="flex justify-end gap-2">
-                            <Button onClick={() => onConfirm(detalhes?.data.UniqueID, detalhes?.data.DataValidade)} size="sm">Confirmar</Button>
+                            <Button onClick={() => onConfirm(detalhes)} size="sm">Confirmar</Button>
                             <PopoverClose className="px-2 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">Cancelar</PopoverClose>
                         </div>
                     </PopoverContent>

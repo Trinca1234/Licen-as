@@ -145,24 +145,6 @@ export default function LicencaTable({licenca, registo}:repo) {
     }
   };
 
-/*   const refreshSearch = async () => {
-    try {
-      const fetchedData = await GetCookie();
-      if (!fetchedData) return;
-      
-      const url = queryString.stringifyUrl({
-        url: '/api/licencas',
-        query: {
-          id: fetchedData.Revendedor,
-        },
-      });
-      const result = await axios.get<Licenca[]>(url);
-      setLicenca(result.data);
-    } catch (error) {
-      console.error('Error fetching licença:', error);
-    }
-  }; */
-
   const handleItemsPerPageChange = async (value: string) => {
     setItemsPerPage(parseInt(value));
     try {
@@ -269,14 +251,6 @@ export default function LicencaTable({licenca, registo}:repo) {
             onChange={handleSearch}
           />
         </div>
-{/*         <Button 
-          onClick={refreshSearch}
-          className="ml-2" 
-          size="sm" 
-          variant="outline"
-        >
-          <RefreshCcw/>
-        </Button> */}
       </div>
       
       <div className="border rounded-lg mt-2">
