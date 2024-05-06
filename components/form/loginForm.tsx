@@ -19,6 +19,9 @@ import queryString from "query-string"
 import axios from "axios"
 import { useRouter } from "next/navigation";
 import emailjs from "@emailjs/browser";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast"
+
 
 const FormSchema = z.object({
     email: z.string().min(1, {
@@ -35,6 +38,8 @@ const LoginForm = () => {
 
     const router = useRouter()
 
+    const { toast } = useToast()
+
     const form = useForm<z.infer<typeof FormSchema>>({
       resolver: zodResolver(FormSchema),
       defaultValues: {
@@ -43,44 +48,60 @@ const LoginForm = () => {
       },
     })
 
-    const onSubmit = async (values: z.infer<typeof FormSchema>)=>{
-        const url = queryString.stringifyUrl({
-            url: '/api/login',
-            query: {
-                email: values.email,
-                password: values.password
-            }
-        });
-
-        const login = await axios.get(url);
-
-        console.log(login.request.response);
-        
-        if(login.data == "Invalid email"){
-            form.setError("email", { 
-                type: "manual",
-                message: "Conta não existe"
+    const handleToastClick = (error: unknown) => {
+        if (error instanceof Error) {
+            toast({
+                variant: "destructive",
+                title: error.name,
+                description: error.message,
             });
-            return;
-        }else if(login.data == "Invalid password"){
-            form.setError("password", { 
-                type: "manual",
-                message: "Password incorreta"
-            });
-            return;
-        }else if(login.data == "Conta Desativada"){
-            form.setError("email", { 
-                type: "manual",
-                message: "Conta Desativada"
-            });
-            return;
+        } else {
+            console.error("Unexpected error:", error);
         }
+    };
 
-        form.reset();
-        router.push("/licencas");
-        const timeout = setTimeout(() => {
-            window.location.reload();
-        }, 1000);
+    const onSubmit = async (values: z.infer<typeof FormSchema>)=>{
+        try {
+            const url = queryString.stringifyUrl({
+                url: '/api/login',
+                query: {
+                    email: values.email,
+                    password: values.password
+                }
+            });
+    
+            const login = await axios.get(url);
+    
+            console.log(login.request.response);
+            
+            if(login.data == "Invalid email"){
+                form.setError("email", { 
+                    type: "manual",
+                    message: "Conta não existe"
+                });
+                return;
+            }else if(login.data == "Invalid password"){
+                form.setError("password", { 
+                    type: "manual",
+                    message: "Password incorreta"
+                });
+                return;
+            }else if(login.data == "Conta Desativada"){
+                form.setError("email", { 
+                    type: "manual",
+                    message: "Conta Desativada"
+                });
+                return;
+            }
+            form.reset();
+            router.push("/licencas");
+            const timeout = setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        } catch (error) {
+            handleToastClick(error)
+            console.log(error);
+        }
     } 
 
     async function HandleReset(values: z.infer<typeof FormSchema>) {
@@ -127,6 +148,7 @@ const LoginForm = () => {
         }
 
     }
+
 
     return (
         <div>

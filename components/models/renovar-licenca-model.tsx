@@ -25,22 +25,13 @@ import { useEffect, useState } from "react";
 import { Download } from "lucide-react";
 import { PopoverAnchor, PopoverClose } from "@radix-ui/react-popover";
 import { useRouter } from "next/navigation";
-import { stringify } from "querystring";
 import { Toaster, toast } from "sonner";
 
 export const RenovarLicencaModal = () => {
     const { isOpen, onClose, type, data } = useModal();
     const isModalOpen = isOpen && type === "renovarLicenca";
     const [detalhes, setDetalhes] = useState<any>(null);
-    const [divVisible, setDivVisible] = useState(false);
-
-    const toggleDiv = () => {
-        setDivVisible(!divVisible);
-    };
-
     const router = useRouter();
-
-    const { onOpen } = useModal();
 
     useEffect(() => {
         if (isOpen) {

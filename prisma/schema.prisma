@@ -59,7 +59,7 @@ model tChaves {
   TipoAlteracao             String?   @db.VarChar(20)
   Pedido                    String?   @db.VarChar(50)
   DeviceID                  String?   @db.VarChar(50)
-  OnlineActivationNeedsCode Boolean   @default(false, map: "DF_tChaves_OnlineActivation")
+  OnlineActivationNeedsCode Boolean
   OnlineActivationCode      String?   @db.VarChar(255)
 
   @@index([NIF], map: "NIF")
@@ -91,7 +91,7 @@ model tCodPostal {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model tConfiguracaoPrograma {
-  Configuracao String   @db.NChar(1)
+  Configuracao String  @db.NChar(1)
   Descricao    String? @db.VarChar(50)
 
   @@unique([Configuracao, Descricao], map: "ClusteredIndex-20230105-172652", clustered: true)
@@ -157,7 +157,7 @@ model tModulo {
   id              Int     @id(map: "PK_tModulo") @default(autoincrement())
   CodModulo       String? @db.VarChar(3)
   DescricaoModulo String? @db.VarChar(100)
-  Active          Boolean @default(true, map: "DF_tModulo_Active")
+  Active          Boolean
 }
 
 model tPais {
@@ -169,7 +169,7 @@ model tPais {
 
 model tRevendedor {
   NIF                    String    @db.VarChar(12)
-  Pais                   String    @default("N'PT'", map: "DF_tRevendedor_Pais") @db.VarChar(10)
+  Pais                   String    @db.VarChar(10)
   Nome                   String    @db.VarChar(100)
   Morada1                String?   @db.VarChar(100)
   Morada2                String?   @db.VarChar(100)
@@ -190,7 +190,7 @@ model tRevendedor {
   AlteraEstabelecimento  Boolean
   AlteraLicenca          Int
   RenovaLicenca          Boolean
-  PedidoPorObrigatorio   Boolean   @default(false, map: "DF__tRevended__Pedid__4F7CD00D")
+  PedidoPorObrigatorio   Boolean
 
   @@id([NIF, Pais], map: "PK_tRevendedor")
 }
@@ -251,4 +251,65 @@ model tVersaoActual {
 model tVersaoPais {
   Codigo    String  @unique(map: "ClusteredIndex-20230105-173152", clustered: true) @db.VarChar(2)
   Descricao String? @db.VarChar(100)
+}
+
+model SmsMessages {
+  uuid         String    @id(map: "PK_SmsMessages") @db.VarChar(36)
+  pairingUuid  String    @db.VarChar(36)
+  phoneNumber  String    @db.VarChar(20)
+  message      String    @db.VarChar(255)
+  sent         Boolean
+  fetched      Boolean
+  creationDate DateTime  @db.DateTime
+  sentDate     DateTime? @db.DateTime
+  failed       Boolean
+  errorMessage String?   @db.VarChar(255)
+}
+
+model SmsPairingRequests {
+  uuid         String   @id(map: "PK_SmsPairingRequests") @db.VarChar(36)
+  serialNumber String   @db.VarChar(80)
+  phoneName    String?  @db.VarChar(255)
+  phoneID      String?  @db.VarChar(16)
+  accepted     Boolean
+  creationDate DateTime @db.DateTime
+}
+
+model SmsPairings {
+  uuid                  String    @id(map: "PK_SmsPairings") @db.VarChar(36)
+  smsPairingRequestUuid String    @db.VarChar(36)
+  serialNumber          String    @db.VarChar(80)
+  phoneName             String?   @db.VarChar(255)
+  phoneID               String?   @db.VarChar(16)
+  active                Boolean
+  creationDate          DateTime  @db.DateTime
+  lastPing              DateTime? @db.DateTime
+}
+
+model tAjuda {
+  ID        Int       @id(map: "PK_tAjuda") @default(autoincrement())
+  Topico    String?   @db.VarChar(100)
+  Chave     String?   @db.VarChar(50)
+  Descricao String?   @db.Text
+  DataAlt   DateTime? @db.DateTime
+}
+
+model tLicencaWeb {
+  ID               Int       @id(map: "PK_tLicencaWeb") @default(autoincrement())
+  Licenca          String?   @db.VarChar(5)
+  NIF              String?   @db.VarChar(20)
+  Estabelecimento  Int?
+  NumPosto         Int?
+  PodeLicenciar    Boolean?
+  DataValidade     DateTime? @db.DateTime
+  TipoPagamento    String?   @db.VarChar(50)
+  DataActualizacao DateTime? @db.DateTime
+  NumeroSerie      String?   @db.VarChar(50)
+  ChaveActivacao   String?   @db.VarChar(50)
+  Utilizador       String?   @db.VarChar(100)
+  DataModificacao  DateTime? @db.DateTime
+}
+
+model tRelease {
+  Release String @id(map: "PK_tRelease") @db.VarChar(2)
 }

@@ -1,7 +1,6 @@
 import React from 'react'
 import PasswordRecoveryForm from "@/components/form/resetPasswordForm";
 import { cookies } from 'next/headers'
-import { error } from 'console';
 
 interface resetPasswordProps{
     params:{
