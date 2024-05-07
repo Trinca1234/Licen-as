@@ -20,7 +20,6 @@ import axios from "axios"
 import { useRouter } from "next/navigation";
 import emailjs from "@emailjs/browser";
 import { useToast } from "../ui/use-toast";
-import { ToastAction } from "../ui/toast"
 
 
 const FormSchema = z.object({
@@ -95,8 +94,8 @@ const LoginForm = () => {
             }
             form.reset();
             router.push("/licencas");
-            const timeout = setTimeout(() => {
-                window.location.reload();
+            setTimeout(() => {
+                location.reload();
             }, 1000);
         } catch (error) {
             handleToastClick(error)

@@ -13,11 +13,9 @@ async function getData() {
             const user = JSON.parse(cookieData?.value).user
             const licencasResponse = await fetch('http://localhost:3000/api/licencas?id=' + user.Revendedor, { method: 'GET', next: { revalidate: 3600 } });
             const licencasData = await licencasResponse.json();
-            const registosResponse = await fetch(`http://localhost:3000/api/licencas/registos?id=${user.ID}&revendedor=${user.Revendedor}` , { method: 'GET', next: { revalidate: 3600 } });
-            const registosData = await registosResponse.json();
             const repo = {
                 licencas: licencasData,
-                registos: registosData
+                registos: user.registos
             };
             return repo
         }
@@ -34,7 +32,7 @@ export default async function Licencas(){
     if(!repo){
         redirect('/login');
     }else{
-        console.log(repo);
+        console.log(repo.registos);
     }
 
     return (

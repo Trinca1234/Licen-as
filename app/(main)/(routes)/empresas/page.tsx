@@ -14,7 +14,8 @@ async function getData() {
             const empresasResponse = await fetch('http://localhost:3000/api/empresas?id=' + user.Utilizador, { method: 'GET', next: { revalidate: 3600 } });
             const empresasData = await empresasResponse.json();
             const repo = {
-                empresas: empresasData
+                empresas: empresasData,
+                registos: user.registos
             };
             return repo
         }
@@ -39,7 +40,7 @@ export default async function Empresas(){
                     <h1 className="mt-5 text-3xl font-bold tracking-tighter sm:text-2xl md:text-4xl">Empresas</h1>
                 </div>
                 <div className="space-y-4 mb-5"> 
-                    <EmpresasTable empresas={repo.empresas} />
+                    <EmpresasTable empresas={repo.empresas} registo={repo.registos} />
                 </div>
             </div>
         </div>

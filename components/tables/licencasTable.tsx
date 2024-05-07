@@ -85,7 +85,7 @@ export default function LicencaTable({licenca, registo}:repo) {
   const [itemsPerPage, setItemsPerPage] = useState<number>(parseInt(registo));
 
   const { onOpen } = useModal();
-
+  
   const today = new Date();
   const nextMonth = new Date();
   nextMonth.setMonth(nextMonth.getMonth() + 1);
@@ -159,7 +159,8 @@ export default function LicencaTable({licenca, registo}:repo) {
           registos: value
         },
       });
-      await axios.patch(url);
+      const res = await axios.patch(url);
+      console.log(res);
     } catch (error) {
       console.error('Error updating registos:', error);
     }
@@ -222,11 +223,12 @@ export default function LicencaTable({licenca, registo}:repo) {
   const indexOfLastItem: number = currentPage * itemsPerPage;
   const indexOfFirstItem: number = indexOfLastItem - itemsPerPage;
   const currentItems: Licenca[] = sortedLicenca.slice(indexOfFirstItem, indexOfLastItem);
+  console.log(registo);
 
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
-        <Select value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+        <Select defaultValue={registo} value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Registos" />
           </SelectTrigger>

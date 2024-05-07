@@ -46,37 +46,3 @@ export async function PATCH(req: Request) {
         return new NextResponse("Internal Error", { status: 500 });
     }
 }
-
-export async function GET(req: Request) {
-    try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get("id");
-        const revendedor = searchParams.get("revendedor");
-
-        if (!id) {
-            return new NextResponse("Id Missing", { status: 400 });
-        }
-
-        if (!revendedor) {
-            return new NextResponse("Revendedor Missing", { status: 400 });
-        }
-
-        const conta = await db.tVendedor.findFirst({
-            where:{
-                ID: parseInt(id),
-                Revendedor: revendedor
-            }
-        })
-
-        
-        if(!conta){
-            return new NextResponse("Account Error", { status: 400 })
-        }
-
-        return NextResponse.json(conta.registos);
-
-    } catch (error) {
-        console.log("[LICENCAS_ID]", error);
-        return new NextResponse("Internal Error", { status: 500 });
-    }
-}

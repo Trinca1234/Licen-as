@@ -24,6 +24,7 @@ import {
   SearchIcon,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
 
 interface Empresa {
   NIF: string;
@@ -35,16 +36,40 @@ interface Empresa {
   Contacto: string;
 }
 
+const registos = [
+  {
+    value: "10",
+    label: "10",
+  },
+  {
+    value: "20",
+    label: "20",
+  },
+  {
+    value: "30",
+    label: "30",
+  },
+  {
+    value: "40",
+    label: "40",
+  },
+  {
+    value: "50",
+    label: "50",
+  },
+]
+
 interface repo{
-  empresas: Empresa[]
+  empresas: Empresa[],
+  registo: string
 }
 
-export default function EmpresasTable({empresas}:repo) {
+export default function EmpresasTable({empresas, registo}:repo) {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc' | ''>('desc');
   const [sortBy, setSortBy] = useState<'NIF' | 'Pais' | ''>('NIF');
-  const [itemsPerPage, setItemsPerPage] = useState<number>(9);
+  const [itemsPerPage, setItemsPerPage] = useState<number>(parseInt(registo));
 
   console.log(empresas);
 
@@ -72,6 +97,27 @@ export default function EmpresasTable({empresas}:repo) {
     } else {
       setSortBy('Pais');
       setSortDirection('desc');
+    }
+  };
+
+  const handleItemsPerPageChange = async (value: string) => {
+    setItemsPerPage(parseInt(value));
+    try {
+      const fetchedData = await GetCookie();
+      if (!fetchedData) return;
+      
+      const url = queryString.stringifyUrl({
+        url: '/api/licencas/registos',
+        query: {
+          id: fetchedData.ID,
+          revendedor: fetchedData.Revendedor,
+          registos: value
+        },
+      });
+      const res = await axios.patch(url);
+      console.log(res);
+    } catch (error) {
+      console.error('Error updating registos:', error);
     }
   };
 
@@ -104,14 +150,31 @@ export default function EmpresasTable({empresas}:repo) {
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="flex items-center">
-        <SearchIcon className="ml-2 absolute h-4 w-4 text-gray-500 dark:text-gray-400" />
-        <input 
-          className="pl-8 w-full h-9 border border-gray-300 rounded-l focus:outline-none focus:border-primary"
-          placeholder="Search..." 
-          type="search" 
-          value={searchQuery}
-          onChange={handleSearch}
-        />
+      <Select defaultValue="10" value={itemsPerPage.toString()} onValueChange={handleItemsPerPageChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Registos" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Registos</SelectLabel>
+              {registos.map((item: { value: string, label: string }) => (
+                <SelectItem key={item.value} value={item.value}>
+                  {item.label}
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        <div className="relative w-full">
+          <SearchIcon className="absolute h-4 w-4 top-2 left-3 text-gray-500 dark:text-gray-400" />
+          <input 
+            className="pl-8 w-full h-9 border border-gray-300 rounded-l focus:outline-none focus:border-primary"
+            placeholder="Search..."
+            type="search"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </div>
       </div>
       <div className="border rounded-lg">
         <Table>
@@ -164,16 +227,6 @@ export default function EmpresasTable({empresas}:repo) {
             {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, filteredEmpresas?.length || 0)}{' '}
             of {filteredEmpresas?.length}
           </span>
-        </div>
-        <div className="flex items-center mt-2">
-          <span className="mr-2">Registos por página:</span>
-          <input
-            className="border border-gray-300 rounded focus:outline-none focus:border-primary px-2 py-1"
-            type="number"
-            min="1"
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
-          />
         </div>
         <div className="flex items-center gap-2">
           <Button
